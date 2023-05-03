@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "552970261119",
+    "project_id": "emerdy-50e75",
+    "storage_bucket": "emerdy-50e75.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:552970261119:android:65cd620fcc4cf90f6fa54a",
+        "android_client_info": {
+          "package_name": "com.IMECapstone.EmerDy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "552970261119-sdo4tth0jq7h3bpuucjrsgcpp1iov2gk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.IMECapstone.EmerDy",
+            "certificate_hash": "8f0110074bc383f438a8373f329669f9fe68d212"
+          }
+        },
+        {
+          "client_id": "552970261119-nqqf0pplm7hdo9ajs0p6pr22d8ddfdol.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAITNMfALoVyjgCllPv_56f1QtuLl-YiMA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "552970261119-nqqf0pplm7hdo9ajs0p6pr22d8ddfdol.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
