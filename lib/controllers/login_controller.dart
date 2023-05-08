@@ -1,48 +1,32 @@
-import 'package:dio/dio.dart';
-import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
 
 class LoginController {
   final phoneNumberController = TextEditingController();
   final fullNameController = TextEditingController();
-  final verificationController = TextEditingController();
 
   final dio = Dio();
 
-  void sendVerification() async {
-    final phoneNumber = phoneNumberController.text;
-    final fullName = fullNameController.text;
-
+  void login() async {
     try {
       final response = await dio.post(
-        'https://your-node-js-server/send-verification',
+        'https://your-node-js-server/login',
         data: {
-          'phoneNumber': phoneNumber,
-          'fullName': fullName,
-          'deviceToken': 'device_token_here',
+          'phoneNumber': phoneNumberController.text,
+          'fullName': fullNameController.text,
         },
       );
-      print(response.data);
-    } catch (error) {
-      print(error);
-    }
-  }
 
-  void signIn() async {
-    final phoneNumber = phoneNumberController.text;
-    final fullName = fullNameController.text;
-    final verificationNumber = verificationController.text;
-
-    try {
-      final response = await dio.post(
-        'https://your-node-js-server/send-verification',
-        data: {
-          'phoneNumber': phoneNumber,
-          'fullName': fullName,
-          'verificationNumber': verificationNumber,
-        },
-      );
-      print(response.data);
+      // Handle the login response
+      if (response.statusCode == 200) {
+        final token = response.data['token'];
+        // Store the token securely on the client-side (e.g., using Flutter Secure Storage)
+        // Example: await secureStorage.write(key: 'token', value: token);
+        print('Logged in successfully');
+        print('Token: $token');
+      } else {
+        print('Login failed');
+      }
     } catch (error) {
       print(error);
     }
