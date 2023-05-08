@@ -26,22 +26,10 @@ class LoginScreen extends StatelessWidget {
                 labelText: 'Full Name',
               ),
             ),
-            TextField(
-              controller: _loginController.verificationController,
-              decoration: InputDecoration(
-                filled: true,
-                labelText: 'Verification Number',
-              ),
-            ),
-            SizedBox(height: 24.0),
-            ElevatedButton(
-              onPressed: _loginController.sendVerification,
-              child: Text('Send Verification'),
-            ),
             SizedBox(height: 12.0),
             ElevatedButton(
-              onPressed: _loginController.signIn,
-              child: Text('Sign In'),
+              onPressed: _loginController.login,
+              child: Text('Log In'),
             ),
           ],
         ),

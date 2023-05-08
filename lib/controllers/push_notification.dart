@@ -58,7 +58,7 @@ class AppController extends GetxController {
             iOS: IOSInitializationSettings()),
         onSelectNotification: (String? payload) async {
           // Foreground 에서 수신했을 때 생성되는 heads up notification 클릭했을 때의 동작
-          Get.to(NotificationDetailsPage(), arguments: payload);
+          Get.to(ReportScreen(), arguments: payload);
         });
 
     FirebaseMessaging.onMessage.listen((RemoteMessage rm) {
@@ -87,14 +87,14 @@ class AppController extends GetxController {
 
     // Background 상태. Notification 서랍에서 메시지 터치하여 앱으로 돌아왔을 때의 동작은 여기서.
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage rm) {
-      Get.to(NotificationDetailsPage(), arguments: rm.data['argument']);
+      Get.to(ReportScreen(), arguments: rm.data['argument']);
     });
 
     // Terminated 상태에서 도착한 메시지에 대한 처리
     RemoteMessage? initialMessage =
     await FirebaseMessaging.instance.getInitialMessage();
     if (initialMessage != null) {
-      Get.to(NotificationDetailsPage(),
+      Get.to(ReportScreen(),
           arguments: initialMessage.data['argument']);
     }
   }

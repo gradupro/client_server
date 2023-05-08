@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
+import '/controllers/signup_controller.dart';
+import 'package:dio/dio.dart';
 
 class SignUpScreen extends StatefulWidget {
+  final VoidCallback onSignUpComplete;
+
+  SignUpScreen({required this.onSignUpComplete});
+
   @override
   _SignUpScreenState createState() => _SignUpScreenState();
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-
-  final _phonenumberController = TextEditingController();
-  final _varificationnumberController = TextEditingController();
+  final SignUpController _signUpController = SignUpController();
 
   @override
   Widget build(BuildContext context) {
@@ -19,31 +23,41 @@ class _SignUpScreenState extends State<SignUpScreen> {
           children: <Widget>[
             SizedBox(height: 120.0),
             TextField(
-              controller: _phonenumberController,
+              controller: _signUpController.phoneNumberController,
               decoration: InputDecoration(
                 filled: true,
                 labelText: 'phone number',
               ),
             ),
-            SizedBox(height: 12.0),
+            SizedBox(height: 120.0),
             TextField(
-              controller: _varificationnumberController,
+              controller: _signUpController.fullNameController,
               decoration: InputDecoration(
                 filled: true,
-                labelText: 'varification number',
+                labelText: 'full name',
+              ),
+            ),
+            SizedBox(height: 12.0),
+            TextField(
+              controller: _signUpController.verificationController,
+              decoration: InputDecoration(
+                filled: true,
+                labelText: 'verification number',
               ),
               obscureText: true,
             ),
-            ButtonBar(
-              children: <Widget>[
-                RaisedButton(
-                  // 확인을 통해서 전화번호와 인증번호가 맞는지
-                  child: Text('확인'),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
+            SizedBox(height: 24.0),
+            ElevatedButton(
+              onPressed: _signUpController.sendVerification,
+              child: Text('Send Verification'),
+            ),
+            SizedBox(height: 12.0),
+            ElevatedButton(
+              onPressed: () {
+                _signUpController.signUp();
+                widget.onSignUpComplete(); // Call the onSignUpComplete callback
+              },
+              child: Text('Sign Up'),
             ),
           ],
         ),
@@ -51,3 +65,4 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 }
+

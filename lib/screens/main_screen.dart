@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-//import 'package:emerdy_client/assets';
+//import '/assets';
 import 'dart:async';
 
-class MainPage extends StatelessWidget{
+class MainScreen extends StatelessWidget{
   @override
   Widget build(BuildContext context){
     return Scaffold(
@@ -12,14 +12,6 @@ class MainPage extends StatelessWidget{
         elevation: 0.0,
 
         actions: <Widget>[
-          IconButton(
-            icon: Icon(Icon.search),
-            onPressed:(){} ,
-          ),
-          IconButton(
-            icon: Icon(Icon.more_vert),
-            onPressed: (){},
-          )
         ],
       ),
       drawer: Drawer(
@@ -37,6 +29,6 @@ class MainPage extends StatelessWidget{
           ]
         )
       )
-    )
+    );
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '/models/protector.dart'; // Replace with your protector model
+import '/models/protector_model.dart';
 
 class AddProtectorScreen extends StatelessWidget {
   final TextEditingController phoneNumberController = TextEditingController();
@@ -8,7 +8,7 @@ class AddProtectorScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('보호자 추가하기'),
+        title: Text('Add Protector'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -32,7 +32,6 @@ class AddProtectorScreen extends StatelessWidget {
                     phoneNumber: phoneNumber,
                   );
 
-                  // Pass the new protector back to the previous screen
                   Navigator.pop(context, newProtector);
                 }
               },

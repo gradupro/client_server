@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import 'screens/Auth_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/reportlist_screen.dart';
 import 'screens/signup_screen.dart';
+import 'screens/main_screen.dart';
+import 'screens/permission_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -80,9 +81,11 @@ class _MyAppState extends State<MyApp> {
       title: 'My App',
       home: initialScreen,
       routes: {
+        '/main_screen': (context) => MainScreen(),
         '/login_screen': (context) => LoginScreen(),
         '/signup_screen': (context) => SignUpScreen(onSignUpComplete: _updateFirstTime),
-        '/reportlist_screen': (context) => ReportListScreen(),
+        //'/reportlist_screen': (context) => ReportListScreen(),
+        //'/protectlist_screen': (context) => ProtectListScreen(),
       },
     );
   }
