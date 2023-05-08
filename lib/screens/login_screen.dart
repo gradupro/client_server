@@ -1,14 +1,8 @@
 import 'package:flutter/material.dart';
+import '/controllers/login_controller.dart';
 
-class LoginScreen extends StatefulWidget {
-  @override
-  _LoginScreenState createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
-
-  final _phonenumberController = TextEditingController();
-  final _fullnameController = TextEditingController();
+class LoginScreen extends StatelessWidget {
+  final LoginController _loginController = LoginController();
 
   @override
   Widget build(BuildContext context) {
@@ -19,22 +13,35 @@ class _LoginScreenState extends State<LoginScreen> {
           children: <Widget>[
             SizedBox(height: 120.0),
             TextField(
-              controller: _phonenumberController,
+              controller: _loginController.phoneNumberController,
               decoration: InputDecoration(
                 filled: true,
-                labelText: 'phone number',
+                labelText: 'Phone Number',
               ),
             ),
-            ButtonBar(
-              children: <Widget>[
-                RaisedButton(
-                  // 인증번호 보내는 로직 필요
-                  child: Text('인증번호 보내기'),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
+            TextField(
+              controller: _loginController.fullNameController,
+              decoration: InputDecoration(
+                filled: true,
+                labelText: 'Full Name',
+              ),
+            ),
+            TextField(
+              controller: _loginController.verificationController,
+              decoration: InputDecoration(
+                filled: true,
+                labelText: 'Verification Number',
+              ),
+            ),
+            SizedBox(height: 24.0),
+            ElevatedButton(
+              onPressed: _loginController.sendVerification,
+              child: Text('Send Verification'),
+            ),
+            SizedBox(height: 12.0),
+            ElevatedButton(
+              onPressed: _loginController.signIn,
+              child: Text('Sign In'),
             ),
           ],
         ),

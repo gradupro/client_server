@@ -1,18 +1,15 @@
-import 'package:emerdy_client/screens/main_page.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-//import "package:firebase_auth/firebase_auth.dart";
-import 'screens/auth_screen.dart';
+import 'package:permission_handler/permission_handler.dart';
+
+import 'screens/Auth_screen.dart';
 import 'screens/login_screen.dart';
-import 'screens/notificationMessage.dart';
-import 'screens/protect_list.dart';
-import 'screens/report_screen.dart';
+import 'screens/reportlist_screen.dart';
 import 'screens/signup_screen.dart';
 
 void main() {
   runApp(MyApp());
 }
-
 
 class MyApp extends StatefulWidget {
   @override
@@ -21,17 +18,20 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   bool _isFirstTime = false;
-  //bool _isFirstTime;
+  bool _hasPermissions = false;
 
   @override
   void initState() {
     super.initState();
     _checkFirstTime();
+    _checkAndRequestPermissions();
   }
 
   void _checkFirstTime() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    _isFirstTime = prefs.getBool('isFirstTime') ?? true;
+    setState(() {
+      _isFirstTime = prefs.getBool('isFirstTime') ?? true;
+    });
   }
 
   void _updateFirstTime() async {
@@ -39,14 +39,50 @@ class _MyAppState extends State<MyApp> {
     await prefs.setBool('isFirstTime', false);
   }
 
+  Future<void> _checkAndRequestPermissions() async {
+    // 권한 확인
+    var locationStatus = await Permission.location.status;
+    var notificationStatus = await Permission.notification.status;
+    var microphoneStatus = await Permission.microphone.status;
+    var audioStatus = await Permission.audio.status;
+
+    // 권한 없을 시 요청
+    if (!locationStatus.isGranted ||
+        !notificationStatus.isGranted ||
+        !microphoneStatus.isGranted ||
+        !audioStatus.isGranted) {
+      setState(() {
+        _hasPermissions = false;
+      });
+    } else {
+      setState(() {
+        _hasPermissions = true;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    Widget initialScreen;
+    if (_isFirstTime) {
+      if (_hasPermissions) {
+        initialScreen = SignUpScreen(onSignUpComplete: _updateFirstTime);
+      } else {
+        initialScreen = PermissionScreen(onPermissionGranted: () {
+          _checkAndRequestPermissions();
+        });
+      }
+    } else {
+      initialScreen = LoginScreen();
+    }
+
     return MaterialApp(
       title: 'My App',
-      initialRoute: _isFirstTime ? '/auth_screen' : '/reportall',
+      home: initialScreen,
       routes: {
-        MainPage.routeName:(context) => main_page(),
-        AuthScreen.routeName: (context) => auth_screen(onSignUpComplete: _updateFirstTime),
+        '/login_screen': (context) => LoginScreen(),
+        '/signup_screen': (context) => SignUpScreen(onSignUpComplete: _updateFirstTime),
+        '/reportlist_screen': (context) => ReportListScreen(),
       },
     );
   }

@@ -1,35 +1,104 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import '/controllers/routing_push_to_report.dart';
 
-// Push Notification 을 터치했을 때 이동할 페이지
-class NotificationDetailsPage
-    extends GetView<reportscreenController> {
-  const NotificationDetailsPage({Key? key}) : super(key: key);
-
+class ReportListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Get.put(reportscreenController());
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () => Get.back(),
-        ),
+        title: Text('Report List'),
       ),
-      body: Center(
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'payload: ',
-              style: TextStyle(fontSize: 20),
+              'Name',
+              style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
             ),
-            Obx(() => Text(controller.argument.value)),
+            SizedBox(height: 16.0),
+            ElevatedButton(
+              onPressed: () {
+                // Handle make a call button press
+              },
+              child: Text('Make a Call'),
+            ),
+            SizedBox(height: 16.0),
+            Text(
+              '신고 내용',
+              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 8.0),
+            FutureBuilder<String>(
+              future: fetchReportContent(), // Replace with your API call to fetch the report content
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  final reportContent = snapshot.data ?? '';
+                  return Text(reportContent);
+                }
+              },
+            ),
+            SizedBox(height: 16.0),
+            Text(
+              '신고음성',
+              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 8.0),
+            // Add audio player widget here
+            SizedBox(height: 16.0),
+            Text(
+              '신고자 위치',
+              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 8.0),
+            FutureBuilder<String>(
+              future: fetchReporterLocation(), // Replace with your API call to fetch the reporter location
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  final reporterLocation = snapshot.data ?? '';
+                  return Text(reporterLocation);
+                }
+              },
+            ),
+            SizedBox(height: 16.0),
+            ElevatedButton(
+              onPressed: () {
+                // Handle "경찰에 신고하기" button press
+              },
+              child: Text('경찰에 신고하기'),
+            ),
+            SizedBox(height: 8.0),
+            ElevatedButton(
+              onPressed: () {
+                // Handle "위급 상황 중단" button press
+              },
+              child: Text('위급 상황 중단'),
+            ),
           ],
         ),
       ),
     );
+  }
+
+  Future<String> fetchReportContent() async {
+    // Simulate API call delay
+    await Future.delayed(Duration(seconds: 2));
+    // Replace with your API call logic to fetch the report content
+    return 'Report content from server';
+  }
+
+  Future<String> fetchReporterLocation() async {
+    // Simulate API call delay
+    await Future.delayed(Duration(seconds: 2));
+    // Replace with your API call logic to fetch the reporter location
+    return 'Reporter location from server';
   }
 }
