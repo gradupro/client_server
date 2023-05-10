@@ -2,7 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
-import '/screens/report_screen.dart';
+import '/screens/reportdetail_screen.dart';
 import '/controllers/ActivateNoti.dart';
 
 class AppController extends GetxController {
@@ -55,7 +55,7 @@ class AppController extends GetxController {
     await flutterLocalNotificationsPlugin.initialize(
         InitializationSettings(
             android: AndroidInitializationSettings('@mipmap/ic_launcher'),
-            iOS: IOSInitializationSettings()),
+            //iOS: IOSInitializationSettings()),
         onSelectNotification: (String? payload) async {
           // Foreground 에서 수신했을 때 생성되는 heads up notification 클릭했을 때의 동작
           Get.to(ReportScreen(), arguments: payload);
@@ -87,7 +87,7 @@ class AppController extends GetxController {
 
     // Background 상태. Notification 서랍에서 메시지 터치하여 앱으로 돌아왔을 때의 동작은 여기서.
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage rm) {
-      Get.to(ReportScreen(), arguments: rm.data['argument']);
+      Get.to(ReportDetaiScreen(), arguments: rm.data['argument']);
     });
 
     // Terminated 상태에서 도착한 메시지에 대한 처리

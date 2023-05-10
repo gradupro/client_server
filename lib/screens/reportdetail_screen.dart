@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
+import '/controllers/reportdetail_controller.dart';
 
-class ReportScreen extends StatelessWidget {
+class ReportDetailScreen extends StatelessWidget {
+  final ReportDetailController controller;
+  final int reportId;
+
+  ReportDetailScreen({ required this.reportId, required this.controller});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Report List'),
+        title: Text('Report Detail'),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.0),
@@ -30,7 +36,7 @@ class ReportScreen extends StatelessWidget {
             ),
             SizedBox(height: 8.0),
             FutureBuilder<String>(
-              future: fetchReportContent(), // Replace with your API call to fetch the report content
+              future: controller.fetchReportContent(), // Replace with your API call to fetch the report content
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return CircularProgressIndicator();
@@ -56,7 +62,7 @@ class ReportScreen extends StatelessWidget {
             ),
             SizedBox(height: 8.0),
             FutureBuilder<String>(
-              future: fetchReporterLocation(), // Replace with your API call to fetch the reporter location
+             // future: controller.fetchReporterLocation(), // Replace with your API call to fetch the reporter location
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return CircularProgressIndicator();
@@ -86,19 +92,5 @@ class ReportScreen extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Future<String> fetchReportContent() async {
-    // Simulate API call delay
-    await Future.delayed(Duration(seconds: 2));
-    // Replace with your API call logic to fetch the report content
-    return 'Report content from server';
-  }
-
-  Future<String> fetchReporterLocation() async {
-    // Simulate API call delay
-    await Future.delayed(Duration(seconds: 2));
-    // Replace with your API call logic to fetch the reporter location
-    return 'Reporter location from server';
   }
 }

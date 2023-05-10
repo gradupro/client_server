@@ -1,13 +1,12 @@
 class User {
-  final String phoneNumber;
-  final String fullName;
+  String? name;
+  String? phoneNumber;
+  String? JWT;
 
-  User({required this.phoneNumber, required this.fullName});
 
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
-      phoneNumber: json['phoneNumber'],
-      fullName: json['fullName'],
-    );
-  }
+  User({
+    required this.name,
+    required this.phoneNumber,
+    required this.JWT,
+  });
 }
