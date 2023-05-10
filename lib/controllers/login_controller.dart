@@ -1,34 +1,55 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import '/models/user_model.dart';
+import '/screens/protectorlist_screen.dart';
 
 class LoginController {
   final phoneNumberController = TextEditingController();
   final fullNameController = TextEditingController();
 
-  final dio = Dio();
+  final Dio dio = Dio();
+  final GlobalKey<NavigatorState> navigatorKey;
+
+  LoginController({required this.navigatorKey});
 
   void login() async {
-    try {
-      final response = await dio.post(
-        'https://your-node-js-server/login',
-        data: {
-          'phoneNumber': phoneNumberController.text,
-          'fullName': fullNameController.text,
-        },
-      );
+    final phoneNumber = phoneNumberController.text;
+    final fullName = fullNameController.text;
 
-      // Handle the login response
-      if (response.statusCode == 200) {
-        final token = response.data['token'];
-        // Store the token securely on the client-side (e.g., using Flutter Secure Storage)
-        // Example: await secureStorage.write(key: 'token', value: token);
-        print('Logged in successfully');
-        print('Token: $token');
+    try {
+      User user = await getUserByPhoneNumberAndFullName(phoneNumber, fullName);
+
+      if (user != null) {
+        final response = await dio.post(
+          'https://occurring-dvd-plants-shanghai.trycloudflare.com/user/login',
+          data: {
+            'phone_Number': user.phoneNumber,
+            'fullName': user.name,
+            'JWT': user.JWT,
+          },
+        );
+
+        // Navigate to the ProtectorListScreen
+        navigatorKey.currentState?.push(
+          MaterialPageRoute(
+            builder: (context) => ProtectorListScreen(),
+          ),
+        );
       } else {
-        print('Login failed');
+        print('User not found');
       }
     } catch (error) {
       print(error);
     }
+  }
+
+  User getUserByPhoneNumberAndFullName(String phoneNumber, String fullName) {
+    List<User> users = [];
+
+    User matchedUser = users.firstWhere(
+          (user) =>
+      user.phoneNumber == phoneNumber && user.name == fullName,
+    );
+    return matchedUser;
   }
 }

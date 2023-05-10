@@ -53,11 +53,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
             SizedBox(height: 12.0),
             ElevatedButton(
-              onPressed: () {
-                _signUpController.signUp();
-                widget.onSignUpComplete(); // Call the onSignUpComplete callback
+              onPressed: _signUpController.verifycode,
+              child: Text('verify code'),
+            ),
+            SizedBox(height: 24.0),
+            ElevatedButton(
+              onPressed: (){
+                _signUpController.signup(widget.onSignUpComplete, context);
               },
-              child: Text('Sign Up'),
+              child: Text('sign up'),
             ),
           ],
         ),

@@ -3,12 +3,12 @@ import '/controllers/reportdetail_controller.dart';
 import '/controllers/reportlist_controller.dart';
 import 'reportdetail_screen.dart';
 
-class ReportListScreen extends StatefulWidget {
+class ProtectListScreen extends StatefulWidget {
   @override
-  _ReportListScreenState createState() => _ReportListScreenState();
+  _ProtectListScreenState createState() => _ProtectListScreenState();
 }
 
-class _ReportListScreenState extends State<ReportListScreen> {
+class _ProtectListScreenState extends State<ProtectListScreen> {
   final ReportListController _controller = ReportListController();
   int _currentIndex = 0;
   late ReportDetailController _reportDetailController;
@@ -16,8 +16,8 @@ class _ReportListScreenState extends State<ReportListScreen> {
   @override
   void initState() {
     super.initState();
-    _controller.fetchReports(); // Fetch initial reports
-    _reportDetailController = ReportDetailController();
+    _controller.fetchReports();// Fetch initial reports
+    _reportDetailController  = ReportDetailController();
   }
 
   @override
@@ -39,7 +39,7 @@ class _ReportListScreenState extends State<ReportListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('신고기록'),
+        title: Text('보호기록'),
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(48.0),
           child: BottomNavigationBar(
@@ -84,7 +84,7 @@ class _ReportListScreenState extends State<ReportListScreen> {
               itemBuilder: (context, index) {
                 final report = reports[index];
                 return ListTile(
-                  title: Text(report.title.toString()),
+                  title: Text(report.title),
                   onTap: () {
                     _navigateToReportDetail(context, report.id);
                   },
