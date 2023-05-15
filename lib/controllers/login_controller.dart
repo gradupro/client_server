@@ -21,7 +21,7 @@ class LoginController {
 
       if (user != null) {
         final response = await dio.post(
-          'https://occurring-dvd-plants-shanghai.trycloudflare.com/user/login',
+          'http://ecs-elb-1310785165.ap-northeast-2.elb.amazonaws.com/api/user/login',
           data: {
             'phone_Number': user.phoneNumber,
             'fullName': user.name,

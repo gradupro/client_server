@@ -56,7 +56,7 @@ class _ReportListScreenState extends State<ReportListScreen> {
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.security),
-                label: '보호 목록',
+                label: '보호 기록',
               ),
             ],
           ),
