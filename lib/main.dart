@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
-//routing할 스크린 import 값들
+// Import screens for routing
 import 'screens/login_screen.dart';
 import 'screens/protectorlist_screen.dart';
 import 'screens/reportlist_screen.dart';
@@ -13,8 +13,6 @@ import 'screens/signup_screen.dart';
 import 'screens/main_screen.dart';
 import 'screens/permission_screen.dart';
 import 'screens/protectlist_screen.dart';
-
-import '/models/user_model.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,7 +29,6 @@ class _MyAppState extends State<MyApp> {
   bool _isFirstTime = false;
   bool _hasPermissions = false;
   late MainController _mainController;
-
 
   @override
   void initState() {
@@ -57,7 +54,6 @@ class _MyAppState extends State<MyApp> {
     var locationStatus = await Permission.location.status;
     var notificationStatus = await Permission.notification.status;
     var microphoneStatus = await Permission.microphone.status;
-    var audioStatus = await Permission.audio.status;
 
     // Check if Firebase Messaging permission is granted
     FirebaseMessaging messaging = FirebaseMessaging.instance;
@@ -72,20 +68,12 @@ class _MyAppState extends State<MyApp> {
     );
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-    }
-
-    notificationStatus = await Permission.notification.status;
-
-    if (!locationStatus.isGranted ||
-        !notificationStatus.isGranted ||
-        !microphoneStatus.isGranted ||
-        !audioStatus.isGranted) {
-      setState(() {
-        _hasPermissions = false;
-  });
-    } else {
       setState(() {
         _hasPermissions = true;
+      });
+    } else {
+      setState(() {
+        _hasPermissions = false;
       });
     }
   }
@@ -111,7 +99,8 @@ class _MyAppState extends State<MyApp> {
       routes: {
         '/main_screen': (context) => MainScreen(controller: _mainController),
         '/login_screen': (context) => LoginScreen(),
-        '/signup_screen': (context) => SignUpScreen(onSignUpComplete: _updateFirstTime),
+        '/signup_screen': (context) =>
+            SignUpScreen(onSignUpComplete: _updateFirstTime),
         '/reportlist_screen': (context) => ReportListScreen(),
         '/protectlist_screen': (context) => ProtectListScreen(),
         '/protectorlist_screen': (context) => ProtectorListScreen(),

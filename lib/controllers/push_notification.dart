@@ -58,7 +58,7 @@ class AppController extends GetxController {
             //iOS: IOSInitializationSettings()),
         onSelectNotification: (String? payload) async {
           // Foreground 에서 수신했을 때 생성되는 heads up notification 클릭했을 때의 동작
-          Get.to(ReportScreen(), arguments: payload);
+          Get.to(ReportDetailScreen(reportId: reportId, controller: controller), arguments: payload);
         });
 
     FirebaseMessaging.onMessage.listen((RemoteMessage rm) {

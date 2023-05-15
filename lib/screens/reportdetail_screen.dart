@@ -11,7 +11,7 @@ class ReportDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Report Detail'),
+        title: Text('상세 신고'),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.0),

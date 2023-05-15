@@ -22,7 +22,7 @@ class SignUpController {
 
     try {
       final response = await dio.post(
-        'https://certified-lots-mic-devices.trycloudflare.com/auth/SMS',
+        'http://ecs-elb-1310785165.ap-northeast-2.elb.amazonaws.com/api/auth/SMS',
         data: {
           'phone_number': phoneNumber,
         },
@@ -40,7 +40,7 @@ class SignUpController {
 
     try {
       final response = await dio.post(
-        'https://certified-lots-mic-devices.trycloudflare.com/auth/code',
+        'http://ecs-elb-1310785165.ap-northeast-2.elb.amazonaws.com/api/auth/code',
         data: {
           'phone_number': phoneNumber,
           'code': verificationNumber,
@@ -68,7 +68,7 @@ class SignUpController {
 
     try {
       final response = await dio.post(
-        'https://certified-lots-mic-devices.trycloudflare.com/user/signup',
+        'http://ecs-elb-1310785165.ap-northeast-2.elb.amazonaws.com/api/user/signup',
         data: {
           'phone_number': phoneNumber,
           'name': fullName,
@@ -77,9 +77,9 @@ class SignUpController {
 
       if (response.statusCode == 201) {
         // Parse the response JSON
-        final data = json.decode(response.data.toString());
-        print(data);
-        final jwt = data['data']['accessToken'];
+        final datum = response.data;
+        print(datum);
+        final jwt = datum['data']['accessToken'];
         print(jwt);
 
         // Update the user model
