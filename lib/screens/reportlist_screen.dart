@@ -30,7 +30,9 @@ class _ReportListScreenState extends State<ReportListScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ReportDetailScreen(reportId: reportId, controller: _reportDetailController),
+        builder: (context) =>
+            ReportDetailScreen(
+                reportId: reportId, controller: _reportDetailController),
       ),
     );
   }
@@ -74,7 +76,7 @@ class _ReportListScreenState extends State<ReportListScreen> {
           ],
         ),
       ),
-      body: StreamBuilder<List<dynamic>>(
+      body: StreamBuilder<List<Report>>(
         stream: _controller.reportsStream,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
@@ -83,8 +85,18 @@ class _ReportListScreenState extends State<ReportListScreen> {
               itemCount: reports.length,
               itemBuilder: (context, index) {
                 final report = reports[index];
+                final voice = report.voices.isNotEmpty
+                    ? report.voices[0]
+                    : null;
                 return ListTile(
-                  title: Text(report.title.toString()),
+                  title: Text('${report.createdAt ?? ''}'),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('상황: ${voice?.prediction?.combinedLabel ?? ''}'),
+                      Text('내용: ${voice?.note ?? ''}'),
+                    ],
+                  ),
                   onTap: () {
                     _navigateToReportDetail(context, report.id);
                   },

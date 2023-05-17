@@ -21,7 +21,7 @@ class PermissionScreen extends StatelessWidget {
               style: TextStyle(fontSize: 18.0),
             ),
             SizedBox(height: 20.0),
-            RaisedButton(
+            ElevatedButton(
               child: Text('Grant Permissions'),
               onPressed: () {
                 Permission.location.request().then((status) {
@@ -37,3 +37,5 @@ class PermissionScreen extends StatelessWidget {
     );
   }
 }
+
+

@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:552970261119:android:65cd620fcc4cf90f6fa54a",
         "android_client_info": {
-          "package_name": "com.IMECapstone.EmerDy"
+          "package_name": "com.example.emerdy_client"
         }
       },
       "oauth_client": [
@@ -17,7 +17,7 @@
           "client_id": "552970261119-sdo4tth0jq7h3bpuucjrsgcpp1iov2gk.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.IMECapstone.EmerDy",
+            "package_name": "com.example.emerdy_client",
             "certificate_hash": "8f0110074bc383f438a8373f329669f9fe68d212"
           }
         },

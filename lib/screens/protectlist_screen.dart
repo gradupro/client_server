@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '/controllers/reportdetail_controller.dart';
-import '/controllers/reportlist_controller.dart';
+import '/controllers/protectlist_controller.dart';
 import 'reportdetail_screen.dart';
 
 class ProtectListScreen extends StatefulWidget {
@@ -9,15 +9,15 @@ class ProtectListScreen extends StatefulWidget {
 }
 
 class _ProtectListScreenState extends State<ProtectListScreen> {
-  final ReportListController _controller = ReportListController();
+  final ProtectListController _controller = ProtectListController();
   int _currentIndex = 0;
   late ReportDetailController _reportDetailController;
 
   @override
   void initState() {
     super.initState();
-    _controller.fetchReports();// Fetch initial reports
-    _reportDetailController  = ReportDetailController();
+    _controller.fetchReports(); // Fetch initial reports
+    _reportDetailController = ReportDetailController();
   }
 
   @override
@@ -30,7 +30,9 @@ class _ProtectListScreenState extends State<ProtectListScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ReportDetailScreen(reportId: reportId, controller: _reportDetailController),
+        builder: (context) =>
+            ReportDetailScreen(
+                reportId: reportId, controller: _reportDetailController),
       ),
     );
   }
@@ -39,7 +41,7 @@ class _ProtectListScreenState extends State<ProtectListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('보호기록'),
+        title: Text('신고기록'),
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(48.0),
           child: BottomNavigationBar(
@@ -74,7 +76,7 @@ class _ProtectListScreenState extends State<ProtectListScreen> {
           ],
         ),
       ),
-      body: StreamBuilder<List<dynamic>>(
+      body: StreamBuilder<List<Report>>(
         stream: _controller.reportsStream,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
@@ -83,8 +85,18 @@ class _ProtectListScreenState extends State<ProtectListScreen> {
               itemCount: reports.length,
               itemBuilder: (context, index) {
                 final report = reports[index];
+                final voice = report.voices.isNotEmpty
+                    ? report.voices[0]
+                    : null;
                 return ListTile(
-                  title: Text(report.title),
+                  title: Text('${report.createdAt ?? ''}'),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('상황: ${voice?.prediction?.combinedLabel ?? ''}'),
+                      Text('내용: ${voice?.note ?? ''}'),
+                    ],
+                  ),
                   onTap: () {
                     _navigateToReportDetail(context, report.id);
                   },
