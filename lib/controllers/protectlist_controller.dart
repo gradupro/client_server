@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:rxdart/rxdart.dart';
 
-class ReportListController {
+class ProtectListController {
   final ScrollController _scrollController = ScrollController();
   final BehaviorSubject<List<Report>> _reportsSubject =
   BehaviorSubject<List<Report>>();
@@ -31,7 +31,7 @@ class ReportListController {
       _isLoading = true;
 
       final url =
-          'http://ecs-elb-1310785165.ap-northeast-2.elb.amazonaws.com/api/report/request';
+          'http://ecs-elb-1310785165.ap-northeast-2.elb.amazonaws.com/api/report/protect';
 
       try {
         final response = await http.get(Uri.parse(url));

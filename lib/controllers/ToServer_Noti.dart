@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'dart:convert';
 
 class MyController extends GetxController {
-  String serverUrl = "https://inquiry-unified-decreased-organised.trycloudflare.com/";
+  String serverUrl = "http://ecs-elb-1310785165.ap-northeast-2.elb.amazonaws.com/api/auth/code";
 
   Future<bool> triggerOccur() async {
 
@@ -11,7 +11,7 @@ class MyController extends GetxController {
     //triggerEvent();
 
     final response = await http.post(
-      Uri.parse('$serverUrl/send-notification'),
+      Uri.parse('http://ecs-elb-1310785165.ap-northeast-2.elb.amazonaws.com/api/report'),
       body: {'message': 'Trigger has occurred'},
     );
     if (response.statusCode == 200) {

@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'dart:convert';
 
 class ActivateNotifunc extends GetxController {
-  String serverUrl = "https://inquiry-unified-decreased-organised.trycloudflare.com/";
+  String serverUrl = "http://ecs-elb-1310785165.ap-northeast-2.elb.amazonaws.com/api/auth/code";
 
   bool isNotiActivated = false;
   Future<void> ActivateNoti() async {

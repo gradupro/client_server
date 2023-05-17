@@ -4,9 +4,11 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import '/screens/reportdetail_screen.dart';
 import '/controllers/ActivateNoti.dart';
+import '/controllers/reportdetail_controller.dart';
 
 class AppController extends GetxController {
   static AppController get to => Get.find();
+  late ReportDetailController _reportDetailController;
 
   final Rxn<RemoteMessage> message = Rxn<RemoteMessage>();
   bool isNotiActivated = false;
@@ -87,7 +89,7 @@ class AppController extends GetxController {
 
     // Background 상태. Notification 서랍에서 메시지 터치하여 앱으로 돌아왔을 때의 동작은 여기서.
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage rm) {
-      Get.to(ReportDetaiScreen(), arguments: rm.data['argument']);
+      Get.to(ReportDetailScreen(reportId: reportId, controller: controller)Screen(), arguments: rm.data['argument']);
     });
 
     // Terminated 상태에서 도착한 메시지에 대한 처리
