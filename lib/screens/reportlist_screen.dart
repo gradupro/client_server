@@ -95,6 +95,8 @@ class _ReportListScreenState extends State<ReportListScreen> {
                     children: [
                       Text('상황: ${voice?.prediction?.combinedLabel ?? ''}'),
                       Text('내용: ${voice?.note ?? ''}'),
+                      //Text('위치: '),
+                      //Text('주소: '),
                     ],
                   ),
                   onTap: () {

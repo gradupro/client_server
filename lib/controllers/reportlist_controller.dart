@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:rxdart/rxdart.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ReportListController {
   final ScrollController _scrollController = ScrollController();
@@ -9,6 +10,7 @@ class ReportListController {
   BehaviorSubject<List<Report>>();
   bool _isLoading = false;
   int _id = 1;
+  final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
 
   ScrollController get scrollController => _scrollController;
   Stream<List<Report>> get reportsStream => _reportsSubject.stream;
@@ -29,24 +31,40 @@ class ReportListController {
   Future<void> fetchReports() async {
     if (!_isLoading) {
       _isLoading = true;
-
+      final String? jwt = await _secureStorage.read(key: 'jwt');
       final url =
           'http://ecs-elb-1310785165.ap-northeast-2.elb.amazonaws.com/api/report/request';
 
       try {
-        final response = await http.get(Uri.parse(url));
+        final response = await http.get(
+          Uri.parse(url),
+          headers: {'Authorization': 'Bearer $jwt'},
+        );
 
         if (response.statusCode == 200) {
           final data = json.decode(response.body);
-          final List<Report> fetchedReports = List<Report>.from(
-            data.map((reportData) => Report.fromJson(reportData)),
-          );
 
-          if (!_reportsSubject.isClosed) {
-            _reportsSubject.add(fetchedReports);
+          if (data != null && data is Map<String, dynamic>) {
+            final List<Report> fetchedReports = [];
+
+            if (data.containsKey('data') && data['data'] is List<dynamic>) {
+              final List<dynamic> reportDataList = data['data'];
+
+              for (var reportData in reportDataList) {
+                if (reportData is Map<String, dynamic>) {
+                  fetchedReports.add(Report.fromJson(reportData));
+                }
+              }
+            }
+
+            if (!_reportsSubject.isClosed) {
+              _reportsSubject.add(fetchedReports);
+            }
+
+            _id++;
+          } else {
+            throw Exception('Invalid data format');
           }
-
-          _id++;
         } else {
           throw Exception('Failed to fetch reports');
         }

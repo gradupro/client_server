@@ -93,8 +93,12 @@ class _ProtectListScreenState extends State<ProtectListScreen> {
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Text('신고자: '),
+                      Text('신고자 번호: '),
                       Text('상황: ${voice?.prediction?.combinedLabel ?? ''}'),
                       Text('내용: ${voice?.note ?? ''}'),
+                      //Text('위치: '),
+                      //Text('주소: '),
                     ],
                   ),
                   onTap: () {

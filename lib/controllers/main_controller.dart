@@ -42,8 +42,6 @@ class MainController {
       );
 
       // Handle the server response here if needed
-      print(jwt);
-      print(response.body);
       print('Device info sent successfully');
     } catch (e) {
       print('Error sending device info: $e');
