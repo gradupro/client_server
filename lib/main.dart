@@ -1,6 +1,7 @@
 import 'package:emerdy_client/controllers/main_controller.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -13,10 +14,20 @@ import 'screens/signup_screen.dart';
 import 'screens/main_screen.dart';
 import 'screens/permission_screen.dart';
 import 'screens/protectlist_screen.dart';
+import 'controllers/receiveNotiforProtector_controller.dart';
+import 'screens/acceptProtector_screen.dart';
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  print("Handling a background message: ${message.data}");
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
+    statusBarColor: Colors.transparent,
+  ));
   runApp(MyApp());
 }
 
@@ -29,6 +40,7 @@ class _MyAppState extends State<MyApp> {
   bool _isFirstTime = false;
   bool _hasPermissions = false;
   late MainController _mainController;
+  late PushNotificationController _pushNotificationController;
 
   @override
   void initState() {
@@ -36,6 +48,8 @@ class _MyAppState extends State<MyApp> {
     _checkFirstTime();
     _checkAndRequestPermissions();
     _mainController = MainController();
+    _pushNotificationController = PushNotificationController();
+    _receivePushNotification();
   }
 
   void _checkFirstTime() async {
@@ -78,6 +92,19 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
+  Future<void> _receivePushNotification() async {
+    await _pushNotificationController.receivePushNotification((bool accepted) {
+      if (accepted) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProtectorRequestScreen(),
+          ),
+        );
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget initialScreen;
@@ -94,7 +121,7 @@ class _MyAppState extends State<MyApp> {
     }
 
     return MaterialApp(
-      title: 'My App',
+      title: 'EmerDy',
       home: initialScreen,
       routes: {
         '/main_screen': (context) => MainScreen(controller: _mainController),
@@ -104,6 +131,7 @@ class _MyAppState extends State<MyApp> {
         '/reportlist_screen': (context) => ReportListScreen(),
         '/protectlist_screen': (context) => ProtectListScreen(),
         '/protectorlist_screen': (context) => ProtectorListScreen(),
+        '/AcceptProtector_screen': (context) => ProtectorRequestScreen(),
       },
     );
   }

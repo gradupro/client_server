@@ -1,4 +1,4 @@
-package com.example.emerdy_client
+package com.IMECapstone.EmerDy
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -11,14 +11,16 @@ class TriggerController extends GetxController {
   Future<void> initialize() async {
     accelerometerEvents.listen((AccelerometerEvent event) {
       double magnitude = calculateAccelerationMagnitude(event);
+      print('Magnitude: $magnitude');
 
-      double shakeThreshold = 0.01; // Adjust this value as needed
+      double shakeThreshold = 0.005; // Adjust this value as needed
       Duration shakeDuration = Duration(seconds: 2); // Adjust this duration as needed
 
       if (magnitude > shakeThreshold) {
         Timer(Duration.zero, () {
           Timer(shakeDuration, () {
             if (magnitude > shakeThreshold) {
+              print('Shake event detected');
               triggerEvent();
             }
           });
@@ -31,19 +33,25 @@ class TriggerController extends GetxController {
     double x = event.x;
     double y = event.y;
     double z = event.z;
-    return sqrt(x * x + y * y + z * z);
+    double magnitude = sqrt(x * x + y * y + z * z);
+    print('Acceleration X: $x, Y: $y, Z: $z, Magnitude: $magnitude');
+    return magnitude;
   }
 
   Future<void> triggerEvent() async {
     final String? jwt = await _secureStorage.read(key: 'jwt');
-    final response = await http.post(
-      Uri.parse('http://ecs-elb-1310785165.ap-northeast-2.elb.amazonaws.com/api/report'),
-      headers: {'Authorization': 'Bearer $jwt'},
-    );
-    if (response.statusCode == 200) {
-      print('Notification request sent successfully');
+    if (jwt != null) {
+      final response = await http.post(
+        Uri.parse('http://ecs-elb-1310785165.ap-northeast-2.elb.amazonaws.com/api/report'),
+        headers: {'Authorization': 'Bearer $jwt'},
+      );
+      if (response.statusCode == 200) {
+        print('Notification request sent successfully');
+      } else {
+        print('Failed to send notification request');
+      }
     } else {
-      print('Failed to send notification request');
+      print('JWT token is null. Make sure the user is authenticated.');
     }
   }
 }
