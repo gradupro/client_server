@@ -17,6 +17,7 @@ class MainController {
       await messaging.requestPermission(alert: true, badge: true, sound: true);
       // Get the device token
       String? token = await messaging.getToken();
+      print('devicetoken: $token');
       return token;
     } catch (e) {
       print('Error getting device token: $e');
