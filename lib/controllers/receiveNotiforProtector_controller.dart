@@ -18,7 +18,7 @@ class PushNotificationController {
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
-  Future<bool> receivePushNotification(Function(bool) onAccept) async {
+  Future<bool> receivePushNotification() async {
     final String serverURL =
         'http://ecs-elb-1310785165.ap-northeast-2.elb.amazonaws.com/api/user/protector/request';
 
@@ -31,12 +31,10 @@ class PushNotificationController {
         final requesterName = wardData['name'];
         final requesterPhoneNumber = wardData['phone_number'];
 
-        // Pass the requester's information to the onAccept callback function
-        onAccept(requesterPhoneNumber);
-
         // Display a notification to the user
         await showNotification(requesterName, requesterPhoneNumber);
-
+        print(requesterName);
+        print(requesterPhoneNumber);
         return true;
       } else {
         return false;
@@ -64,7 +62,9 @@ class PushNotificationController {
       'New Protector Request',
       'Requester: $requesterName\nPhone Number: $requesterPhoneNumber',
       platformChannelSpecifics,
+      payload: 'notification_payload', // Add a payload if required
     );
+    print(requesterName);
   }
 
   static Future<bool> sendProtectorResponse(bool accepted) async {
@@ -82,7 +82,7 @@ class PushNotificationController {
         },
       );
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 202) {
         return true;
       } else {
         return false;
