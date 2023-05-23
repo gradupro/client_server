@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
 
 // Import screens for routing
 import 'screens/login_screen.dart';
@@ -17,9 +19,7 @@ import 'screens/protectlist_screen.dart';
 import 'controllers/receiveNotiforProtector_controller.dart';
 import 'screens/acceptProtector_screen.dart';
 
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  print("Handling a background message: ${message.data}");
-}
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,6 +31,43 @@ void main() async {
   runApp(MyApp());
 }
 
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  print("Handling a background message: ${message.data}");
+
+  const AndroidNotificationDetails androidPlatformChannelSpecifics =
+  AndroidNotificationDetails('noti_channel', 'your_channel_name',
+      importance: Importance.max, priority: Priority.high);
+  const NotificationDetails platformChannelSpecifics =
+  NotificationDetails(android: androidPlatformChannelSpecifics);
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  FlutterLocalNotificationsPlugin();
+  await flutterLocalNotificationsPlugin.show(
+    0,
+    'Push Notification',
+    message.data.toString(),
+    platformChannelSpecifics,
+    payload: 'Default_Sound',
+  );
+}
+
+void _firebaseMessagingForegroundHandler(RemoteMessage message) async {
+  print("Received a foreground message: ${message.data}");
+  const AndroidNotificationDetails androidPlatformChannelSpecifics =
+  AndroidNotificationDetails('noti_channel', 'your_channel_name',
+      importance: Importance.max, priority: Priority.high);
+  const NotificationDetails platformChannelSpecifics =
+  NotificationDetails(android: androidPlatformChannelSpecifics);
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  FlutterLocalNotificationsPlugin();
+  await flutterLocalNotificationsPlugin.show(
+    0,
+    'Push Notification',
+    message.data.toString(),
+    platformChannelSpecifics,
+    payload: 'Default_Sound',
+  );
+}
+
 class MyApp extends StatefulWidget {
   @override
   _MyAppState createState() => _MyAppState();
@@ -40,7 +77,7 @@ class _MyAppState extends State<MyApp> {
   bool _isFirstTime = false;
   bool _hasPermissions = false;
   late MainController _mainController;
-  late PushNotificationController _pushNotificationController;
+  late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
   @override
   void initState() {
@@ -48,8 +85,17 @@ class _MyAppState extends State<MyApp> {
     _checkFirstTime();
     _checkAndRequestPermissions();
     _mainController = MainController();
-    _pushNotificationController = PushNotificationController();
-    _receivePushNotification();
+    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    FirebaseMessaging.onMessage.listen(_firebaseMessagingForegroundHandler);
+    initializeNotifications();
+  }
+
+  Future<void> initializeNotifications() async {
+    const AndroidInitializationSettings initializationSettingsAndroid =
+    AndroidInitializationSettings('@mipmap/ic_launcher');
+    final InitializationSettings initializationSettings =
+    InitializationSettings(android: initializationSettingsAndroid);
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
   void _checkFirstTime() async {
@@ -90,19 +136,6 @@ class _MyAppState extends State<MyApp> {
         _hasPermissions = false;
       });
     }
-  }
-
-  Future<void> _receivePushNotification() async {
-    await _pushNotificationController.receivePushNotification((bool accepted) {
-      if (accepted) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ProtectorRequestScreen(),
-          ),
-        );
-      }
-    });
   }
 
   @override
