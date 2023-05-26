@@ -38,7 +38,7 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Main Screen'),
+        title: Text('EmerDy'),
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(48.0),
           child: BottomNavigationBar(

@@ -40,42 +40,6 @@ class _ProtectListScreenState extends State<ProtectListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('신고기록'),
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(48.0),
-          child: BottomNavigationBar(
-            currentIndex: _currentIndex,
-            onTap: (index) {
-              setState(() {
-                _currentIndex = index;
-              });
-            },
-            items: [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.list),
-                label: '신고 기록',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.security),
-                label: '보호 기록',
-              ),
-            ],
-          ),
-        ),
-      ),
-      drawer: Drawer(
-        child: ListView(
-          children: [
-            ListTile(
-              title: Text('Protector List'),
-              onTap: () {
-                Navigator.pushNamed(context, '/protectorlist_screen');
-              },
-            ),
-          ],
-        ),
-      ),
       body: StreamBuilder<List<Report>>(
         stream: _controller.reportsStream,
         builder: (context, snapshot) {

@@ -2,11 +2,12 @@ import 'package:emerdy_client/controllers/main_controller.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
+import 'package:get/get.dart';
 
 // Import screens for routing
 import 'screens/login_screen.dart';
@@ -16,10 +17,12 @@ import 'screens/signup_screen.dart';
 import 'screens/main_screen.dart';
 import 'screens/permission_screen.dart';
 import 'screens/protectlist_screen.dart';
-import 'controllers/receiveNotiforProtector_controller.dart';
 import 'screens/acceptProtector_screen.dart';
 
 
+// Import controller
+import 'controllers/receiveNotiforProtector_controller.dart';
+import 'controllers/trigger_controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,6 +31,7 @@ void main() async {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
     statusBarColor: Colors.transparent,
   ));
+  Get.put(TriggerController());
   runApp(MyApp());
 }
 
@@ -35,8 +39,12 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print("Handling a background message: ${message.data}");
 
   const AndroidNotificationDetails androidPlatformChannelSpecifics =
-  AndroidNotificationDetails('noti_channel', 'your_channel_name',
-      importance: Importance.max, priority: Priority.high);
+  AndroidNotificationDetails(
+    'noti_channel',
+    'your_channel_name',
+    importance: Importance.max,
+    priority: Priority.high,
+  );
   const NotificationDetails platformChannelSpecifics =
   NotificationDetails(android: androidPlatformChannelSpecifics);
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -48,6 +56,9 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     platformChannelSpecifics,
     payload: 'Default_Sound',
   );
+
+  // Navigating to AcceptProtectorScreen when notification is clicked
+  Get.to(() => ProtectorRequestScreen());
 }
 
 void _firebaseMessagingForegroundHandler(RemoteMessage message) async {
@@ -66,6 +77,8 @@ void _firebaseMessagingForegroundHandler(RemoteMessage message) async {
     platformChannelSpecifics,
     payload: 'Default_Sound',
   );
+
+  Get.to(() => ProtectorRequestScreen());
 }
 
 class MyApp extends StatefulWidget {
@@ -78,6 +91,7 @@ class _MyAppState extends State<MyApp> {
   bool _hasPermissions = false;
   late MainController _mainController;
   late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+  final TriggerController _triggerController = Get.find<TriggerController>();
 
   @override
   void initState() {
@@ -88,6 +102,7 @@ class _MyAppState extends State<MyApp> {
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
     FirebaseMessaging.onMessage.listen(_firebaseMessagingForegroundHandler);
     initializeNotifications();
+    _triggerController.initialize();
   }
 
   Future<void> initializeNotifications() async {
@@ -115,25 +130,22 @@ class _MyAppState extends State<MyApp> {
     var notificationStatus = await Permission.notification.status;
     var microphoneStatus = await Permission.microphone.status;
 
-    // Check if Firebase Messaging permission is granted
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
-    NotificationSettings settings = await messaging.requestPermission(
-      alert: true,
-      announcement: false,
-      badge: true,
-      carPlay: false,
-      criticalAlert: false,
-      provisional: false,
-      sound: true,
-    );
-
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      setState(() {
-        _hasPermissions = true;
-      });
+    // Check if microphone permission is granted
+    if (microphoneStatus != PermissionStatus.granted) {
+      // Request microphone permission
+      var result = await Permission.microphone.request();
+      if (result == PermissionStatus.granted) {
+        setState(() {
+          _hasPermissions = true;
+        });
+      } else {
+        setState(() {
+          _hasPermissions = false;
+        });
+      }
     } else {
       setState(() {
-        _hasPermissions = false;
+        _hasPermissions = true;
       });
     }
   }
@@ -153,7 +165,7 @@ class _MyAppState extends State<MyApp> {
       initialScreen = MainScreen(controller: _mainController);
     }
 
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'EmerDy',
       home: initialScreen,
       routes: {
@@ -169,3 +181,4 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
+
