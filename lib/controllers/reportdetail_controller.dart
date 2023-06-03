@@ -9,6 +9,10 @@ class ReportDetailController {
     return 'Report content from server';
   }
 
+  checkInterruption(int reportId) async {
+
+  }
+
 //Future<String> fetchReporterLocation() async {
 // Simulate API call delay
 //await Future.delayed(Duration(seconds: 2));

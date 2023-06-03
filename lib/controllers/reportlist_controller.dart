@@ -34,43 +34,41 @@ class ReportListController {
       final String? jwt = await _secureStorage.read(key: 'jwt');
       final url =
           'http://ecs-elb-1310785165.ap-northeast-2.elb.amazonaws.com/api/report/request';
-
       try {
         final response = await http.get(
           Uri.parse(url),
           headers: {'Authorization': 'Bearer $jwt'},
         );
-
         if (response.statusCode == 200) {
           final data = json.decode(response.body);
-
           if (data != null && data is Map<String, dynamic>) {
             final List<Report> fetchedReports = [];
-
             if (data.containsKey('data') && data['data'] is List<dynamic>) {
               final List<dynamic> reportDataList = data['data'];
-
               for (var reportData in reportDataList) {
                 if (reportData is Map<String, dynamic>) {
                   fetchedReports.add(Report.fromJson(reportData));
                 }
               }
             }
-
             if (!_reportsSubject.isClosed) {
               _reportsSubject.add(fetchedReports);
             }
-
             _id++;
           } else {
             throw Exception('Invalid data format');
           }
         } else {
-          throw Exception('Failed to fetch reports');
+          throw Exception(
+              'Failed to fetch reports. Status code: ${response.statusCode}');
         }
       } catch (e) {
         if (!_reportsSubject.isClosed) {
-          _reportsSubject.addError('Failed to fetch reports: $e');
+          String errorMessage = 'Failed to fetch reports';
+          if (e != null) {
+            errorMessage += ': $e';
+          }
+          _reportsSubject.addError(errorMessage);
         }
       } finally {
         _isLoading = false;
@@ -84,63 +82,51 @@ class ReportListController {
   }
 }
 
-class Voice {
-  final String note;
-  final Prediction prediction;
-
-  Voice({
-    required this.note,
-    required this.prediction,
-  });
-
-  factory Voice.fromJson(Map<String, dynamic> json) {
-    return Voice(
-      note: json['note'],
-      prediction: Prediction.fromJson(json['prediction']),
-    );
-  }
-}
-
-class Prediction {
-  final String combinedLabel;
-
-  Prediction({
-    required this.combinedLabel,
-  });
-
-  factory Prediction.fromJson(Map<String, dynamic> json) {
-    return Prediction(
-      combinedLabel: json['combined_label'],
-    );
-  }
-}
-
 class Report {
   final int id;
-  final String category;
   final String createdAt;
-  final List<Voice> voices;
+  final User user;
+  final List<String> categoryList;
 
   Report({
     required this.id,
-    required this.category,
     required this.createdAt,
-    required this.voices,
+    required this.user,
+    required this.categoryList,
   });
 
   factory Report.fromJson(Map<String, dynamic> json) {
-    final List<Voice> voicesList = [];
-    final voicesData = json['voices'] as List<dynamic>;
-
-    voicesData.forEach((voiceData) {
-      voicesList.add(Voice.fromJson(voiceData));
-    });
+    final userJson = json['user'] as Map<String, dynamic>;
+    final categoryListJson = json['categories']['categoryList'] as List<dynamic>;
 
     return Report(
       id: json['id'],
-      category: json['category'],
       createdAt: json['created_at'],
-      voices: voicesList,
+      user: User.fromJson(userJson),
+      categoryList: List<String>.from(categoryListJson),
+    );
+  }
+}
+
+class User {
+  final int id;
+  final String name;
+  final String phoneNumber;
+  final String createdAt;
+
+  User({
+    required this.id,
+    required this.name,
+    required this.phoneNumber,
+    required this.createdAt,
+  });
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      id: json['id'],
+      name: json['name'],
+      phoneNumber: json['phone_number'],
+      createdAt: json['created_at'],
     );
   }
 }
