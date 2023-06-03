@@ -2,6 +2,7 @@ buildscript {
     ext.kotlin_version = '1.8.21'
     repositories {
         google()
+        gradlePluginPortal()
         mavenCentral()
     }
 
@@ -9,6 +10,9 @@ buildscript {
         classpath 'com.android.tools.build:gradle:7.4.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.google.gms:google-services:4.3.15'
+        classpath "com.google.android.libraries.mapsplatform.secrets-gradle-plugin:com.google.android.libraries.mapsplatform.secrets-gradle-plugin.gradle.plugin:2.0.0"
+
+
     }
 }
 
@@ -16,6 +20,7 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        gradlePluginPortal()
     }
 
     // Enable custom BuildConfig fields
