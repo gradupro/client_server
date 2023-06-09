@@ -1,3 +1,4 @@
+import 'package:emerdy_client/controllers/reportlist_controller.dart';
 import 'package:flutter/material.dart';
 import '../controllers/protectlist_controller.dart';
 import '/controllers/reportdetail_controller.dart';
@@ -64,11 +65,11 @@ class _ProtectListScreenState extends State<ProtectListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: StreamBuilder<List<Report>>(
+      body: StreamBuilder<List<Reports>>(
         stream: _controller.reportsStream,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            final reports = snapshot.data!;
+            final reports = snapshot.data!.reversed.toList();
             return ListView.builder(
               itemCount: reports.length,
               itemBuilder: (context, index) {
@@ -78,8 +79,8 @@ class _ProtectListScreenState extends State<ProtectListScreen> {
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('신고자: '),
-                      Text('신고자 번호: '),
+                      Text('신고자: ${report.user.name} '),
+                      Text('신고자 번호: ${report.user.phoneNumber} '),
                       Text('상황: ${report.categoryList.join(', ')}'),
                       //Text('위치: '),
                       //Text('주소: '),

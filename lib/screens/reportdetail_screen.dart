@@ -81,13 +81,6 @@ class ReportDetailScreen extends StatelessWidget {
               },
               child: Text('경찰에 신고하기'),
             ),
-            SizedBox(height: 8.0),
-            ElevatedButton(
-              onPressed: () {
-                // Handle "위급 상황 중단" button press
-              },
-              child: Text('위급 상황 중단'),
-            ),
           ],
         ),
       ),

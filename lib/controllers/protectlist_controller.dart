@@ -1,3 +1,4 @@
+import 'package:emerdy_client/controllers/reportlist_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -7,14 +8,14 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ProtectListController {
   final ScrollController _scrollController = ScrollController();
-  final BehaviorSubject<List<Report>> _reportsSubject =
-  BehaviorSubject<List<Report>>();
+  final BehaviorSubject<List<Reports>> _reportsSubject =
+  BehaviorSubject<List<Reports>>();
   bool _isLoading = false;
   int _id = 1;
   final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
 
   ScrollController get scrollController => _scrollController;
-  Stream<List<Report>> get reportsStream => _reportsSubject.stream;
+  Stream<List<Reports>> get reportsStream => _reportsSubject.stream;
 
   ReportListController() {
     _scrollController.addListener(_scrollListener);
@@ -44,12 +45,12 @@ class ProtectListController {
         if (response.statusCode == 200) {
           final data = json.decode(response.body);
           if (data != null && data is Map<String, dynamic>) {
-            final List<Report> fetchedReports = [];
+            final List<Reports> fetchedReports = [];
             if (data.containsKey('data') && data['data'] is List<dynamic>) {
               final List<dynamic> reportDataList = data['data'];
               for (var reportData in reportDataList) {
                 if (reportData is Map<String, dynamic>) {
-                  fetchedReports.add(Report.fromJson(reportData));
+                  fetchedReports.add(Reports.fromJson(reportData));
                 }
               }
             }

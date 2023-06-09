@@ -11,7 +11,7 @@ class InterruptionCheckController {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         final interruptionStatus = data['interruption'];
-
+        print(interruptionStatus);
         return interruptionStatus;
       } else {
         return false; // return false when status code is not 200

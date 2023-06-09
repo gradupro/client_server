@@ -7,7 +7,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:get/get.dart';
 
 // Import screens for routing
 import 'screens/login_screen.dart';
@@ -19,9 +18,7 @@ import 'screens/permission_screen.dart';
 import 'screens/protectlist_screen.dart';
 import 'screens/acceptProtector_screen.dart';
 
-
 // Import controller
-import 'controllers/receiveNotiforProtector_controller.dart';
 import 'controllers/trigger_controller.dart';
 
 void main() async {
