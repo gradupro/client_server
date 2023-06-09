@@ -37,7 +37,7 @@ class TriggerController extends GetxController {
       if (!_isRecording) {
         double magnitude = calculateAccelerationMagnitude(event);
 
-        double shakeThreshold = 35; // Adjust this value as needed
+        double shakeThreshold = 40; // Adjust this value as needed
         Duration shakeDuration = Duration(seconds: 2); // Adjust this duration as needed
 
         if (magnitude > shakeThreshold) {
@@ -91,7 +91,7 @@ class TriggerController extends GetxController {
 
         final String url = 'http://ecs-elb-1310785165.ap-northeast-2.elb.amazonaws.com/api/report';
         final String? audioFilePath = await startRecording(
-            Duration(seconds: 30));
+            Duration(seconds: 10));
 
         if (audioFilePath != null && audioFilePath.isNotEmpty) {
           try {

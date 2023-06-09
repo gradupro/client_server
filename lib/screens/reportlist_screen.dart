@@ -64,11 +64,11 @@ class _ReportListScreenState extends State<ReportListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: StreamBuilder<List<Report>>(
+      body: StreamBuilder<List<Reports>>(
         stream: _controller.reportsStream,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            final reports = snapshot.data!;
+            final reports = snapshot.data!.reversed.toList();
             return ListView.builder(
               itemCount: reports.length,
               itemBuilder: (context, index) {
@@ -79,8 +79,6 @@ class _ReportListScreenState extends State<ReportListScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text('상황: ${report.categoryList.join(', ')}'),
-                      // Text('위치: '),
-                      // Text('주소: '),
                     ],
                   ),
                   onTap: () {
@@ -90,7 +88,7 @@ class _ReportListScreenState extends State<ReportListScreen> {
               },
             );
           } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+            return Center(child: Text('Error: ${snapshot.error.toString()}'));
           } else {
             return Center(child: CircularProgressIndicator());
           }

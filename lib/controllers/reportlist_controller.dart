@@ -6,14 +6,14 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ReportListController {
   final ScrollController _scrollController = ScrollController();
-  final BehaviorSubject<List<Report>> _reportsSubject =
-  BehaviorSubject<List<Report>>();
+  final BehaviorSubject<List<Reports>> _reportsSubject =
+  BehaviorSubject<List<Reports>>();
   bool _isLoading = false;
   int _id = 1;
   final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
 
   ScrollController get scrollController => _scrollController;
-  Stream<List<Report>> get reportsStream => _reportsSubject.stream;
+  Stream<List<Reports>> get reportsStream => _reportsSubject.stream;
 
   ReportListController() {
     _scrollController.addListener(_scrollListener);
@@ -32,8 +32,7 @@ class ReportListController {
     if (!_isLoading) {
       _isLoading = true;
       final String? jwt = await _secureStorage.read(key: 'jwt');
-      final url =
-          'http://ecs-elb-1310785165.ap-northeast-2.elb.amazonaws.com/api/report/request';
+      final url = 'http://ecs-elb-1310785165.ap-northeast-2.elb.amazonaws.com/api/report/request';
       try {
         final response = await http.get(
           Uri.parse(url),
@@ -41,32 +40,37 @@ class ReportListController {
         );
         if (response.statusCode == 200) {
           final data = json.decode(response.body);
+          print('Received data: $data');
           if (data != null && data is Map<String, dynamic>) {
-            final List<Report> fetchedReports = [];
+            final List<Reports> fetchedReports = [];
             if (data.containsKey('data') && data['data'] is List<dynamic>) {
               final List<dynamic> reportDataList = data['data'];
               for (var reportData in reportDataList) {
                 if (reportData is Map<String, dynamic>) {
-                  fetchedReports.add(Report.fromJson(reportData));
+                  try {
+                    fetchedReports.add(Reports.fromJson(reportData));
+                  } catch (e) {
+                    print('Error parsing reportData: $reportData');
+                    rethrow;
+                  }
                 }
               }
             }
-            if (!_reportsSubject.isClosed) {
-              _reportsSubject.add(fetchedReports);
-            }
+            _reportsSubject.add(fetchedReports);
             _id++;
           } else {
             throw Exception('Invalid data format');
           }
         } else {
-          throw Exception(
-              'Failed to fetch reports. Status code: ${response.statusCode}');
+          throw Exception('Failed to fetch reports. Status code: ${response.statusCode}');
         }
-      } catch (e) {
+      } catch (e, stackTrace) {
         if (!_reportsSubject.isClosed) {
           String errorMessage = 'Failed to fetch reports';
           if (e != null) {
             errorMessage += ': $e';
+            print('Exception: $e');
+            print('StackTrace: $stackTrace');
           }
           _reportsSubject.addError(errorMessage);
         }
@@ -76,39 +80,47 @@ class ReportListController {
     }
   }
 
+
+
   void dispose() {
-    _scrollController.dispose();
     _reportsSubject.close();
   }
 }
 
-class Report {
+class Reports {
   final int id;
   final String createdAt;
   final User user;
   final List<String> categoryList;
 
-  Report({
+  Reports({
     required this.id,
     required this.createdAt,
     required this.user,
     required this.categoryList,
   });
 
-  factory Report.fromJson(Map<String, dynamic> json) {
+  factory Reports.fromJson(Map<String, dynamic> json) {
     final userJson = json['user'] as Map<String, dynamic>;
     final categoryListJson = json['categories']['categoryList'] as List<dynamic>;
 
-    return Report(
+    final List<String> categoryList = categoryListJson
+        .where((value) => value != null)
+        .map((value) => value.toString())
+        .toList();
+
+    return Reports(
       id: json['id'],
-      createdAt: json['created_at'],
+      createdAt: json['created_at'] != null ? json['created_at'].toString() : '',
       user: User.fromJson(userJson),
-      categoryList: List<String>.from(categoryListJson),
+      categoryList: categoryList,
     );
   }
+
 }
 
-class User {
+
+  class User {
   final int id;
   final String name;
   final String phoneNumber;
@@ -130,3 +142,5 @@ class User {
     );
   }
 }
+
+
